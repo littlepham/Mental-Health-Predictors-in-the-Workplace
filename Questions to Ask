@@ -3,18 +3,29 @@ Business Question:
 
 
 Additional Questions to Consider:
-1. Which predictive algorithm should we use
+1. Which predictive algorithm should we use/list of models: 
+Types of models: 
+-Knn
+-K-fold
+-Trees/Random Forest
+-Boosting
+-Logistic Regression
+
+-Each designing individual model 
+
 2. Who is pretty confident with R and coding (0-100%)? 
 -Nicole: 20%
 -Olivia: 10% 
 -Monica: 30%
 -Kavya: 20-30%
 -Aarib: 
+
 3. Who is pretty confident with presentation (0-100%)?
 -Nicole: 100%
 -Olivia: 70%
 -Monica: 90%
 -Kavya: 80%
 -Aarib:
+
 4. How should we timeline this to finish it on time?
 -Friday: 
