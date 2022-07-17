@@ -1,0 +1,20 @@
+install.packages("caret", dependencies = TRUE)
+install.packages('gower', dependencies = TRUE)
+install.packages('hardhat', dependencies = TRUE)
+library(ISLR)
+library(caret)
+library(dplyr)
+
+set.seed(123)
+
+# define training control which
+# generates parameters that further
+# control how models are created
+train_control <- trainControl(method = "repeatedcv",
+                              number = 10, repeats = 3)
+# building the model and
+# predicting the target variable
+# as per the Naive Bayes classifier
+model <- train(mental_illness~., data = data_new,
+               trControl = train_control, method = "nb", na.action = na.exclude)
+print(model)
