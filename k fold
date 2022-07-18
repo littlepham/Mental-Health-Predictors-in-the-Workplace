@@ -1,0 +1,106 @@
+install.packages("caret", dependencies = TRUE)
+install.packages('gower', dependencies = TRUE)
+install.packages('hardhat', dependencies = TRUE)
+library(ISLR)
+library(caret)
+library(dplyr)
+
+install.packages('boot')
+library(boot)
+
+ set.seed (17)
+ cv.error.10 <- rep (0, 1)
+ for (i in 1:1) {
+   glm.fit <- glm (work_interfere ~ poly(remote_work, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(benefits, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(care_options, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(wellness_program, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(seek_help, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(anonymity, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(leave, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ #health consequence has the lowest error
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(mental_health_consequence, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(coworkers, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(supervisor, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 2)
+ for (i in 1:2) {
+   glm.fit <- glm (work_interfere ~ poly(mental_vs_physical, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
+ 
+ set.seed (17)
+ cv.error.10 <- rep (0, 1)
+ for (i in 1:1) {
+   glm.fit <- glm (work_interfere ~ poly(obs_consequence, i), data = data_new)
+   cv.error.10[i] <- cv.glm((data_new), glm.fit, K = 10)$delta[1]
+ }
+ cv.error.10
