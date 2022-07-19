@@ -95,14 +95,15 @@ n = dim(data_new)[1]
 
 plot(work_interfere, mental_health_consequence)
 
-train = data.frame(work_interfere,mental_health_consequence)
+train = data.frame(work_interfere, mental_health_consequence)
 test = data.frame(work_interfere, mental_health_consequence)
 ind = order(test[,1])
 test =test[ind,]
 
 MSE = NULL
 
-kk = c(2,10,50,100,150,200,250,300,400,505)
+# kk = c(120,150,180,250,300,400,505)
+kk = c(20,120, 150, 170, 180, 190, 400, 505)
 
 for(i in kk){
   
@@ -114,14 +115,27 @@ for(i in kk){
   plot(work_interfere,mental_health_consequence,main=paste("k=",i),pch=19,cex=0.8,col="darkgray")
   lines(test[,1],near$fitted,col=2,lwd=2)
   cat ("Press [enter] to continue")
-  line <- readline()
+  #line <- readline()
 }
 
+plot(kk,MSE,type="b",xlab="kk",col="blue",ylab="MSE",lwd=2,cex.lab=1.2)
+plot(kk,sqrt(MSE),type="b",xlab="kk",col="blue",ylab="RMSE",lwd=2,cex.lab=1.2)
+text(kk[3],sqrt(MSE[3]),paste("k=",kk[3]),col=2,cex=1.2)
+MSE[3]
+sqrt(MSE[3])
 
+sqrt(MSE[5])
 plot(log(1/kk),sqrt(MSE),type="b",xlab="Complexity (log(1/k))",col="blue",ylab="RMSE",lwd=2,cex.lab=1.2)
-text(log(1/kk[1]),sqrt(MSE[1])+0.3,paste("k=",kk[1]),col=2,cex=1.2)
-text(log(1/kk[10])+0.4,sqrt(MSE[10]),paste("k=",kk[10]),col=2,cex=1.2)
+text(log(1/kk[1]),sqrt(MSE[1]),paste("k=",kk[1]),col=2,cex=1.2)
+#text(log(1/kk[10])+0.4,sqrt(MSE[10]),paste("k=",kk[6]),col=2,cex=1.2)
 text(log(1/kk[5])+0.4,sqrt(MSE[5]),paste("k=",kk[5]),col=2,cex=1.2)
+
+plot(kk,MSE,type="b",xlab="kk",col="blue",ylab="RMSE",lwd=2,cex.lab=1.2)
+plot(kk,sqrt(MSE),type="b",xlab="kk",col="blue",ylab="RMSE",lwd=2,cex.lab=1.2)
+
+text(kk[3],sqrt(MSE[3]),paste("k=",kk[3]),col=2,cex=1.2)
+sqrt(MSE[3])
+
 
 near = kknn(mental_health_consequence~work_interfere,train,test,k=20,kernel = "rectangular")
 
@@ -135,6 +149,6 @@ for(i in seq(1,505,by=100)){
   line <- readline()
 }
 
-# print(MSE) = lowest MSE:  0.5706219
-
+print(MSE) #lowest MSE:  0.5706219 k = 180 index3
+plot(kk,MSE,type="b",xlab="kk",col="blue",ylab="RMSE",lwd=2,cex.lab=1.2)
 
