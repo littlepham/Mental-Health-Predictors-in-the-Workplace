@@ -90,12 +90,17 @@ data_new <- ts %>%
   mean((yhat.boost - boost.test)^2)
   
   boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "gaussian", n.trees = 10000, interaction.depth =  4, shrinkage = 0.001, verbose = F)
-  #changed the shrinkage/alpha above to 0.2 from default 0.001
+  #changed the shrinkage/lambda above to 0.2 from default 0.001
   yhat.boost <- predict(boost.mentalhealth, newdata = data_new[-train, ], n.trees = 10000)
   mean((yhat.boost - boost.test)^2) 
   
   #best model of a Test MSE of 3rd run - 1.709534
   boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "gaussian", n.trees = 2000, interaction.depth =  4, shrinkage = 0.001, verbose = F)
-  #changed the shrinkage/alpha above to 0.2 from default 0.001
+  #changed the shrinkage/lambda above to 0.2 from default 0.001
   yhat.boost <- predict(boost.mentalhealth, newdata = data_new[-train, ], n.trees = 2000)
   mean((yhat.boost - boost.test)^2) 
+
+  #creates the confusion matrix with probability > 0.5
+  boost.prob <-  predict(boost.mentalhealth, data_new[-train, ], n.trees=10000, type="response")
+  boost.pred <-  ifelse(boost.prob >0.5, 1, 0)
+  table(boost.test, boost.pred)
