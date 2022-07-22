@@ -1,3 +1,4 @@
+rm(list = ls())
 install.packages('tidyverse')
 library(tidyverse)
 library(readr)
@@ -6,12 +7,9 @@ library(MASS) ## a library of example datasets
 library(class) ## a library with lots of classification tools
 
 ts <- read_excel("/Volumes/GoogleDrive/My Drive/Summer 2022/Intro to Machine Learning/Project Weeks 1-2/survey (1).xlsx")
-
-#table(techsurvey['work_interfere']) #show the number of yes and no if they are having their mental illness interfere with work
-
-#ts$mental_illness <- ts$work_interfere #create a new variable with work interfere data
-
-#ts$mental_illness <- ifelse(ts$mental_illness == 'NA', 0, 1) #changed all the NAs to 0
+nrow(ts)
+ts<-filter(ts, work_interfere != "NA")
+names(ts)
 
 data_new <- ts %>%                          
   mutate(benefits = replace(benefits, benefits == "Yes", 1)) %>%
@@ -62,11 +60,10 @@ data_new <- ts %>%
   mutate(leave = replace(leave, leave =="Somewhat easy", 3)) %>%
   mutate(leave = replace(leave, leave =="Very easy", 4)) %>%
   
-  mutate(work_interfere = replace(work_interfere, work_interfere == "NA", 0)) %>%
-  mutate(work_interfere = replace(work_interfere, work_interfere =="Never", 1)) %>%
-  mutate(work_interfere = replace(work_interfere, work_interfere == "Rarely", 2)) %>%
-  mutate(work_interfere = replace(work_interfere, work_interfere =="Sometimes", 3)) %>%
-  mutate(work_interfere = replace(work_interfere, work_interfere =="Often", 4))
+  mutate(work_interfere = replace(work_interfere, work_interfere =="Never", "0")) %>%
+  mutate(work_interfere = replace(work_interfere, work_interfere == "Rarely", "1")) %>%
+  mutate(work_interfere = replace(work_interfere, work_interfere =="Sometimes", "1")) %>%
+  mutate(work_interfere = replace(work_interfere, work_interfere =="Often", "1"))
   data_new[1:8] <- list(NULL) #taking out variables we are not considering for our regression
   data_new[2] <- NULL
   data_new[3] <- NULL
@@ -78,29 +75,30 @@ data_new <- ts %>%
   
   library(gbm)
   set.seed(1)
-  boost.test <- data_new[-train, "work_interfere"]
-  boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "gaussian", n.trees = 5000, interaction.depth = 4)
+  train = 1:250
+  boost.train <- data_new[train, ]
+  boost.test <- data_new[-train, ]
+  boost.test
+  boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "bernoulli", n.trees = 5000, interaction.depth = 4)
   #par(mar=c(1,1,1,1))
+  #par(mar=c(5,6,4,1)+.1)
   summary(boost.mentalhealth) #produces a relative influence plot and also outputs the relative influence statistics
-  plot(boost.mentalhealth, i = "care_options") #produce partial dependence plots for care_options, leave, and benefits
-  plot(boost.mentalhealth, i = "leave")
-  plot(boost.mentalhealth, i = "benefits")
-  plot(boost.mentalhealth, i = "coworkers")
   yhat.boost <- predict(boost.mentalhealth, newdata = data_new[-train, ], n.trees = 5000) 
-  mean((yhat.boost - boost.test)^2)
+  mean((yhat.boost - as.numeric(unlist(boost.test))^2))
   
-  boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "gaussian", n.trees = 10000, interaction.depth =  4, shrinkage = 0.001, verbose = F)
-  #changed the shrinkage/lambda above to 0.2 from default 0.001
-  yhat.boost <- predict(boost.mentalhealth, newdata = data_new[-train, ], n.trees = 10000)
-  mean((yhat.boost - boost.test)^2) 
-  
-  #best model of a Test MSE of 3rd run - 1.709534
-  boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "gaussian", n.trees = 2000, interaction.depth =  4, shrinkage = 0.001, verbose = F)
+  boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "bernoulli", n.trees = 2000, interaction.depth =  10, shrinkage = 0.2, verbose = F)
   #changed the shrinkage/lambda above to 0.2 from default 0.001
   yhat.boost <- predict(boost.mentalhealth, newdata = data_new[-train, ], n.trees = 2000)
-  mean((yhat.boost - boost.test)^2) 
-
-  #creates the confusion matrix with probability > 0.5
-  boost.prob <-  predict(boost.mentalhealth, data_new[-train, ], n.trees=10000, type="response")
+  mean((yhat.boost - as.numeric(unlist(boost.test))^2))
+  
+  #best model of a Test MSE of 3rd run - 0.394856
+  boost.mentalhealth <- gbm(work_interfere~., data = data_new[train, ], distribution = "bernoulli", n.trees = 5000, interaction.depth =  4, shrinkage = 0.001, verbose = F)
+  #changed the shrinkage/lambda above to 0.2 from default 0.001
+  yhat.boost <- predict(boost.mentalhealth, newdata = data_new[-train, ], n.trees = 5000)
+  mean((yhat.boost - as.numeric(unlist(boost.test))^2))
+  
+  boost.prob <-  predict(boost.mentalhealth, data_new[-train, ], n.trees=5000, type="response")
   boost.pred <-  ifelse(boost.prob >0.5, 1, 0)
-  table(boost.test, boost.pred)
+  table(boost.test$work_interfere, boost.pred)
+  
+  
