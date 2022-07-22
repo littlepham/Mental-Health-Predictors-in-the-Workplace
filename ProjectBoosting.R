@@ -97,6 +97,7 @@ data_new <- ts %>%
   yhat.boost <- predict(boost.mentalhealth, newdata = data_new[-train, ], n.trees = 5000)
   mean((yhat.boost - as.numeric(unlist(boost.test))^2))
   
+  #confusion matrix 
   boost.prob <-  predict(boost.mentalhealth, data_new[-train, ], n.trees=5000, type="response")
   boost.pred <-  ifelse(boost.prob >0.5, 1, 0)
   table(boost.test$work_interfere, boost.pred)
