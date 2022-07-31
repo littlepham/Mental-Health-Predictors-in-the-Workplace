@@ -250,14 +250,86 @@ plot(rf_gridsearch,main="Tuning using Grid search")
 ########################
 #Boosting Model 
 ########################
+                     
+rm(list = ls())
+install.packages('tidyverse')
+library(tidyverse)
+library(readr)
+library(readxl)
+library(MASS) ## a library of example datasets
+library(class) ## a library with lots of classification tools
 
+ts <- read_excel("/Volumes/GoogleDrive/My Drive/Summer 2022/Intro to Machine Learning/Project Weeks 1-2/survey (1).xlsx")
+nrow(ts)
+ts<-filter(ts, work_interfere != "NA")
+names(ts)
+
+data_new <- ts %>%                          
+  mutate(benefits = replace(benefits, benefits == "Yes", 1)) %>%
+  mutate(benefits = replace(benefits, benefits =="No", -1)) %>%
+  mutate(benefits = replace(benefits, benefits == "Don\'t know", 0)) %>%
+  
+  mutate(anonymity = replace(anonymity, anonymity == "Yes", 1)) %>%
+  mutate(anonymity = replace(anonymity, anonymity =="No", -1)) %>%
+  mutate(anonymity = replace(anonymity, anonymity == "Don\'t know", 0)) %>%
+  
+  mutate(care_options = replace(care_options, care_options == "Yes", 1)) %>%
+  mutate(care_options = replace(care_options, care_options =="No", -1)) %>%
+  mutate(care_options = replace(care_options, care_options == "Not sure", 0)) %>%
+  
+  mutate(wellness_program = replace(wellness_program, wellness_program == "Yes", 1)) %>%
+  mutate(wellness_program = replace(wellness_program, wellness_program =="No", -1)) %>%
+  mutate(wellness_program = replace(wellness_program, wellness_program == "Don't know", 0)) %>%
+  
+  mutate(seek_help = replace(seek_help, seek_help == "Yes", 1)) %>%
+  mutate(seek_help = replace(seek_help, seek_help =="No", -1)) %>%
+  mutate(seek_help = replace(seek_help, seek_help == "Don't know", 0)) %>%
+  
+  mutate(mental_health_consequence = replace(mental_health_consequence, mental_health_consequence == "Yes", 1)) %>%
+  mutate(mental_health_consequence = replace(mental_health_consequence, mental_health_consequence =="No", -1)) %>%
+  mutate(mental_health_consequence = replace(mental_health_consequence, mental_health_consequence == "Maybe", 0)) %>%
+  
+  mutate(supervisor = replace(supervisor, supervisor == "Yes", 1)) %>%
+  mutate(supervisor = replace(supervisor, supervisor =="No", -1)) %>%
+  mutate(supervisor = replace(supervisor, supervisor == "Some of them", 0)) %>%
+  
+  mutate(coworkers = replace(coworkers, coworkers == "Yes", 1)) %>%
+  mutate(coworkers = replace(coworkers, coworkers =="No", -1)) %>%
+  mutate(coworkers = replace(coworkers, coworkers == "Some of them", 0)) %>%
+  
+  mutate(mental_vs_physical = replace(mental_vs_physical, mental_vs_physical == "Yes", 1)) %>%
+  mutate(mental_vs_physical = replace(mental_vs_physical, mental_vs_physical =="No", -1)) %>%
+  mutate(mental_vs_physical = replace(mental_vs_physical, mental_vs_physical == "Don't know", 0)) %>%
+  
+  mutate(obs_consequence = replace(obs_consequence, obs_consequence == "Yes", 1)) %>%
+  mutate(obs_consequence = replace(obs_consequence, obs_consequence =="No", 0)) %>%
+  
+  mutate(remote_work = replace(remote_work, remote_work == "Yes", 1)) %>%
+  mutate(remote_work = replace(remote_work, remote_work =="No", 0)) %>%
+  
+  mutate(leave = replace(leave, leave == "Very difficult", 0)) %>%
+  mutate(leave = replace(leave, leave =="Somewhat difficult", 1)) %>%
+  mutate(leave = replace(leave, leave == "Don\'t know", 2)) %>%
+  mutate(leave = replace(leave, leave =="Somewhat easy", 3)) %>%
+  mutate(leave = replace(leave, leave =="Very easy", 4)) %>%
+  
+  mutate(work_interfere = replace(work_interfere, work_interfere =="Never", "0")) %>%
+  mutate(work_interfere = replace(work_interfere, work_interfere == "Rarely", "1")) %>%
+  mutate(work_interfere = replace(work_interfere, work_interfere =="Sometimes", "1")) %>%
+  mutate(work_interfere = replace(work_interfere, work_interfere =="Often", "1"))
+  data_new[1:8] <- list(NULL) #taking out variables we are not considering for our regression
+  data_new[2] <- NULL
+  data_new[3] <- NULL
+  data_new[10] <- NULL
+  data_new[12:13] <- list(NULL)
+  data_new[14:15] <- list(NULL)
+  data_new = as.data.frame(lapply(data_new, as.numeric))
 
 data_new <- data_new %>%                          
   mutate(work_interfere = replace(work_interfere, work_interfere =="NOT", "0")) %>%
   mutate(work_interfere = replace(work_interfere, work_interfere == "YES", "1")) %>%
   mutate(work_interfere = replace(work_interfere, work_interfere =="YES", "1")) %>%
   mutate(work_interfere = replace(work_interfere, work_interfere =="YES", "1"))
-
 
 library(gbm)
 set.seed(1)
